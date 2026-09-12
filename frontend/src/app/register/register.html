@@ -1,0 +1,37 @@
+<h1>Регистрация</h1>
+
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <div class="field">
+    <label for="email">Email</label>
+    <input id="email" type="email" formControlName="email" />
+    @if (form.controls.email.invalid && form.controls.email.touched) {
+    <p class="field-error">Введите корректный email</p>
+    }
+  </div>
+
+  <div class="field">
+    <label for="username">Имя пользователя</label>
+    <input id="username" type="text" formControlName="username" />
+    @if (form.controls.username.invalid && form.controls.username.touched) {
+    <p class="field-error">Имя пользователя обязательно</p>
+    }
+  </div>
+
+  <div class="field">
+    <label for="password">Пароль</label>
+    <input id="password" type="password" formControlName="password" />
+    @if (form.controls.password.invalid && form.controls.password.touched) {
+    <p class="field-error">Пароль должен быть не короче 6 символов</p>
+    }
+  </div>
+
+  <button type="submit" [disabled]="submitting()">
+    {{ submitting() ? 'Отправка...' : 'Зарегистрироваться' }}
+  </button>
+
+  @if (successMessage()) {
+  <p class="success">{{ successMessage() }}</p>
+  } @if (errorMessage()) {
+  <p class="field-error">{{ errorMessage() }}</p>
+  }
+</form>
