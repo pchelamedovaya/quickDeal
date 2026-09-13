@@ -1,4 +1,4 @@
-<h1>Регистрация</h1>
+<h1>Вход</h1>
 
 <form [formGroup]="form" (ngSubmit)="submit()">
   <div class="field">
@@ -10,23 +10,15 @@
   </div>
 
   <div class="field">
-    <label for="username">Имя пользователя</label>
-    <input id="username" type="text" formControlName="username" />
-    @if (form.controls.username.invalid && form.controls.username.touched) {
-    <p class="field-error">Имя пользователя обязательно</p>
-    }
-  </div>
-
-  <div class="field">
     <label for="password">Пароль</label>
     <input id="password" type="password" formControlName="password" />
     @if (form.controls.password.invalid && form.controls.password.touched) {
-    <p class="field-error">Пароль должен быть не короче 6 символов</p>
+    <p class="field-error">Пароль обязателен</p>
     }
   </div>
 
   <button type="submit" [disabled]="submitting()">
-    {{ submitting() ? 'Отправка...' : 'Зарегистрироваться' }}
+    {{ submitting() ? 'Вход...' : 'Войти' }}
   </button>
 
   @if (errorMessage()) {
@@ -34,4 +26,4 @@
   }
 </form>
 
-<p>Уже есть аккаунт? <a routerLink="/login">Войти</a></p>
+<p>Нет аккаунта? <a routerLink="/register">Зарегистрироваться</a></p>
