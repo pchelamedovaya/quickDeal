@@ -3,7 +3,7 @@ import {Component, inject, signal} from '@angular/core';
 import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 import {Router, RouterLink} from '@angular/router';
 
-import {AuthService} from '../auth/auth.service';
+import {AuthService} from '../../auth/auth.service';
 
 const ERROR_MESSAGES: Record<string, string> = {
   'invalid email or password': 'Неверный email или пароль',

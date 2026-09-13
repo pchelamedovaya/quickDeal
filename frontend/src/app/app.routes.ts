@@ -1,9 +1,9 @@
 import {Routes} from '@angular/router';
 
 import {authGuard} from './auth/auth.guard';
-import {Home} from './home/home';
-import {Login} from './login/login';
-import {Register} from './register/register';
+import {Home} from './pages/home/home';
+import {Login} from './pages/login/login';
+import {Register} from './pages/register/register';
 
 export const routes: Routes = [
   {path: '', redirectTo: 'register', pathMatch: 'full'},
