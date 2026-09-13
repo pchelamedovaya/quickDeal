@@ -1,33 +1,32 @@
 import {HttpErrorResponse} from '@angular/common/http';
 import {Component, inject, signal} from '@angular/core';
 import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
+import {Router, RouterLink} from '@angular/router';
 
-import {AuthService} from '../auth/auth.service';
+import {AuthService} from '../../auth/auth.service';
 
 const ERROR_MESSAGES: Record<string, string> = {
-  'email already taken': 'Этот email уже занят',
-  'username already taken': 'Это имя пользователя уже занято',
+  'invalid email or password': 'Неверный email или пароль',
 };
 
 @Component({
-  selector: 'app-register',
+  selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule],
-  templateUrl: './register.html',
-  styleUrl: './register.css',
+  imports: [ReactiveFormsModule, RouterLink],
+  templateUrl: './login.html',
+  styleUrl: './login.css',
 })
-export class Register {
+export class Login {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
   protected readonly submitting = signal(false);
-  protected readonly successMessage = signal<string | null>(null);
   protected readonly errorMessage = signal<string | null>(null);
 
   protected readonly form = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
-    username: ['', [Validators.required]],
-    password: ['', [Validators.required, Validators.minLength(6)]],
+    password: ['', [Validators.required]],
   });
 
   submit(): void {
@@ -37,16 +36,12 @@ export class Register {
     }
 
     this.submitting.set(true);
-    this.successMessage.set(null);
     this.errorMessage.set(null);
 
-    this.authService.register(this.form.getRawValue()).subscribe({
-      next: (user) => {
+    this.authService.login(this.form.getRawValue()).subscribe({
+      next: () => {
         this.submitting.set(false);
-        this.successMessage.set(
-          `Пользователь ${user.username} успешно зарегистрирован`,
-        );
-        this.form.reset();
+        void this.router.navigateByUrl('/home');
       },
       error: (err: HttpErrorResponse) => {
         this.submitting.set(false);
@@ -54,7 +49,7 @@ export class Register {
         this.errorMessage.set(
           (backendMessage && ERROR_MESSAGES[backendMessage]) ??
             backendMessage ??
-            'Не удалось зарегистрироваться, попробуйте еще раз',
+            'Не удалось войти, попробуйте еще раз',
         );
       },
     });

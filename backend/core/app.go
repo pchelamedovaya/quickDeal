@@ -17,7 +17,14 @@ func NewApp(cfg *config.AppConfig) (*gin.Engine, error) {
 	}
 
 	userRepo := repository.NewUserRepository(db)
-	authService := service.NewAuthService(userRepo)
+	refreshTokenRepo := repository.NewRefreshTokenRepository(db)
+	authService := service.NewAuthService(
+		userRepo,
+		refreshTokenRepo,
+		cfg.JWTAccessSecret,
+		cfg.AccessTokenTTL,
+		cfg.RefreshTokenTTL,
+	)
 	authController := controller.NewAuthController(authService)
 
 	router := gin.Default()

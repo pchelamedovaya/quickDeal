@@ -1,0 +1,29 @@
+<h1>Вход</h1>
+
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <div class="field">
+    <label for="email">Email</label>
+    <input id="email" type="email" formControlName="email" />
+    @if (form.controls.email.invalid && form.controls.email.touched) {
+    <p class="field-error">Введите корректный email</p>
+    }
+  </div>
+
+  <div class="field">
+    <label for="password">Пароль</label>
+    <input id="password" type="password" formControlName="password" />
+    @if (form.controls.password.invalid && form.controls.password.touched) {
+    <p class="field-error">Пароль обязателен</p>
+    }
+  </div>
+
+  <button type="submit" [disabled]="submitting()">
+    {{ submitting() ? 'Вход...' : 'Войти' }}
+  </button>
+
+  @if (errorMessage()) {
+  <p class="field-error">{{ errorMessage() }}</p>
+  }
+</form>
+
+<p>Нет аккаунта? <a routerLink="/register">Зарегистрироваться</a></p>
