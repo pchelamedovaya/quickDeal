@@ -1,0 +1,27 @@
+# Secrets
+.env*
+backend/.env*
+
+# Git
+.git/
+.gitignore
+
+# Go
+backend/vendor/
+
+# Node / Angular
+frontend/node_modules/
+frontend/dist/
+
+# IDEs and editors
+.idea/
+.vscode/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# Documentation
+README.md
