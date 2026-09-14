@@ -3,6 +3,7 @@ package repository
 import (
 	"quickdeal/entity"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -30,6 +31,15 @@ func (r *UserGormRepository) FindByEmail(email string) (*entity.User, error) {
 func (r *UserGormRepository) FindByUsername(username string) (*entity.User, error) {
 	var user entity.User
 	err := r.db.Where("username = ?", username).First(&user).Error
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
+func (r *UserGormRepository) FindByID(id uuid.UUID) (*entity.User, error) {
+	var user entity.User
+	err := r.db.First(&user, "id = ?", id).Error
 	if err != nil {
 		return nil, err
 	}
