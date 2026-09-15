@@ -2,4 +2,11 @@
 
 <p>Вы успешно вошли в систему</p>
 
+<button type="button" (click)="showCreateAdModal.set(true)">
+  Создать объявление
+</button>
 <button type="button" (click)="logout()">Выйти</button>
+
+@if (showCreateAdModal()) {
+<app-create-ad-modal (close)="showCreateAdModal.set(false)" />
+}
