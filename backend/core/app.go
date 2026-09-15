@@ -18,6 +18,7 @@ func NewApp(cfg *config.AppConfig) (*gin.Engine, error) {
 
 	userRepo := repository.NewUserRepository(db)
 	refreshTokenRepo := repository.NewRefreshTokenRepository(db)
+	adRepo := repository.NewAdRepository(db)
 	authService := service.NewAuthService(
 		userRepo,
 		refreshTokenRepo,
@@ -25,10 +26,12 @@ func NewApp(cfg *config.AppConfig) (*gin.Engine, error) {
 		cfg.AccessTokenTTL,
 		cfg.RefreshTokenTTL,
 	)
+	adService := service.NewAdService(adRepo, userRepo)
 	authController := controller.NewAuthController(authService)
+	adController := controller.NewAdController(adService)
 
 	router := gin.Default()
-	routes.Register(router, authController)
+	routes.Register(router, authController, adController, cfg.JWTAccessSecret)
 
 	return router, nil
 }
