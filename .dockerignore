@@ -9,6 +9,11 @@ backend/.env*
 # Go
 backend/vendor/
 
+# Air
+backend/.air.toml
+backend/tmp/
+backend/build-errors.log
+
 # Node / Angular
 frontend/node_modules/
 frontend/dist/

@@ -1,6 +1,9 @@
-.PHONY: run tidy fmt up down restart pull build clean logs logs-db logs-backend logs-frontend
+.PHONY: run-air run tidy fmt up down restart pull build clean logs logs-db logs-backend logs-frontend
 
 # Local
+run-air:
+	cd backend && air
+
 run:
 	cd backend && go run main.go
 
