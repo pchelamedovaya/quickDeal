@@ -1,3 +1,17 @@
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.content {
+  display: flex;
+}
+
+.form-column {
+  width: 400px;
+}
+
 button {
   padding: 6px 12px;
   font-size: 1rem;
