@@ -1,12 +1,10 @@
-<h1>QuickDeal</h1>
+<header>
+  <h1>QuickDeal</h1>
+  <button type="button" (click)="logout()">Выйти</button>
+</header>
 
-<p>Вы успешно вошли в систему</p>
-
-<button type="button" (click)="showCreateAdModal.set(true)">
-  Создать объявление
-</button>
-<button type="button" (click)="logout()">Выйти</button>
-
-@if (showCreateAdModal()) {
-<app-create-ad-modal (close)="showCreateAdModal.set(false)" />
-}
+<div class="content">
+  <div class="form-column">
+    <app-create-ad-form />
+  </div>
+</div>
