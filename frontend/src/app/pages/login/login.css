@@ -1,26 +1,9 @@
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  max-width: 320px;
-}
-
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-label {
-  font-weight: bold;
-}
-
-input {
-  padding: 6px;
-  font-size: 1rem;
-}
-
-.field-error {
-  color: red;
-  margin: 0;
+:host {
+  display: block;
+  max-width: 360px;
+  margin: var(--space-6) auto;
+  padding: var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
 }
