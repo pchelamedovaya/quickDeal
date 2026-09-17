@@ -1,6 +1,8 @@
 <header>
   <h1>QuickDeal</h1>
-  <button type="button" (click)="logout()">Выйти</button>
+  <button type="button" class="button-secondary" (click)="logout()">
+    Выйти
+  </button>
 </header>
 
 <div class="content">
@@ -12,7 +14,7 @@
     <h2>Объявления</h2>
 
     @if (ads().length === 0) {
-    <p>Объявлений пока нет</p>
+    <p class="hint">Объявлений пока нет</p>
     } @for (ad of ads(); track ad.id) {
     <div class="ad-card">
       <h3>{{ ad.title }}</h3>

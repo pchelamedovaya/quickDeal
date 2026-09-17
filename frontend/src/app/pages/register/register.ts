@@ -43,7 +43,8 @@ export class Register {
 
     const {email, password} = this.form.getRawValue();
 
-    this.authService.register(this.form.getRawValue())
+    this.authService
+      .register(this.form.getRawValue())
       .pipe(switchMap(() => this.authService.login({email, password})))
       .subscribe({
         next: () => {
@@ -55,8 +56,8 @@ export class Register {
           const backendMessage: string | undefined = err.error?.error;
           this.errorMessage.set(
             (backendMessage && ERROR_MESSAGES[backendMessage]) ??
-            backendMessage ??
-            'Не удалось зарегистрироваться, попробуйте еще раз',
+              backendMessage ??
+              'Не удалось зарегистрироваться, попробуйте еще раз',
           );
         },
       });

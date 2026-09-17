@@ -17,14 +17,14 @@ export class CreateAdForm {
 
   protected readonly submitting = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
-  protected readonly success = signal(false);
 
-  private successTimeoutId?: ReturnType<typeof setTimeout>;
-
-  protected readonly form = this.fb.nonNullable.group({
-    title: ['', [Validators.required]],
-    description: [''],
-    price: [0, [Validators.required, Validators.min(0.01)]],
+  protected readonly form = this.fb.group({
+    title: this.fb.nonNullable.control('', [Validators.required]),
+    description: this.fb.nonNullable.control(''),
+    price: this.fb.control<number | null>(null, [
+      Validators.required,
+      Validators.min(0.01),
+    ]),
   });
 
   submit(): void {
@@ -35,16 +35,13 @@ export class CreateAdForm {
 
     this.submitting.set(true);
     this.errorMessage.set(null);
-    this.success.set(false);
 
-    this.adsService.create(this.form.getRawValue()).subscribe({
+    const {title, description, price} = this.form.getRawValue();
+
+    this.adsService.create({title, description, price: price ?? 0}).subscribe({
       next: () => {
         this.submitting.set(false);
-        this.success.set(true);
-        this.form.reset({title: '', description: '', price: 0});
-
-        clearTimeout(this.successTimeoutId);
-        this.successTimeoutId = setTimeout(() => this.success.set(false), 1500);
+        this.form.reset({title: '', description: '', price: null});
       },
       error: (err: HttpErrorResponse) => {
         this.submitting.set(false);

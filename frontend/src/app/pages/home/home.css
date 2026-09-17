@@ -1,12 +1,21 @@
+:host {
+  display: block;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: var(--space-5);
+}
+
 header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: var(--space-5);
 }
 
 .content {
   display: flex;
-  gap: 24px;
+  align-items: flex-start;
+  gap: var(--space-5);
 }
 
 .form-column {
@@ -19,20 +28,22 @@ header {
 }
 
 .ad-card {
-  border: 1px solid #ccc;
-  padding: 12px;
-  margin-bottom: 12px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--space-4);
+  margin-bottom: var(--space-3);
 }
 
 .ad-card h3 {
-  margin: 0 0 8px;
+  margin: 0 0 var(--space-2);
 }
 
 .ad-card p {
-  margin: 4px 0;
+  margin: var(--space-1) 0;
 }
 
-button {
-  padding: 6px 12px;
-  font-size: 1rem;
+.ad-card p:last-child {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
 }

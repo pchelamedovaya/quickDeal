@@ -1,36 +1,8 @@
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-label {
-  font-weight: bold;
-}
-
-input,
-textarea {
-  padding: 6px;
-  font-size: 1rem;
-  font-family: inherit;
+:host {
+  display: block;
 }
 
 .actions {
   display: flex;
-  gap: 8px;
-}
-
-.field-error {
-  color: red;
-  margin: 0;
-}
-
-.success-message {
-  color: green;
+  gap: var(--space-2);
 }
