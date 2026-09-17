@@ -36,3 +36,13 @@ func (c *AdController) Create(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusCreated, ad)
 }
+
+func (c *AdController) List(ctx *gin.Context) {
+	ads, err := c.adService.List()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch ads"})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, ads)
+}

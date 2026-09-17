@@ -20,5 +20,6 @@ func Register(router *gin.Engine, authController *controller.AuthController, adC
 	ads.Use(middleware.AuthMiddleware(accessSecret))
 	{
 		ads.POST("", adController.Create)
+		ads.GET("", adController.List)
 	}
 }

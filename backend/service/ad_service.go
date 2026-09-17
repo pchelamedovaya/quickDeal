@@ -42,3 +42,24 @@ func (s *AdService) Create(userID uuid.UUID, req dto.CreateAdRequest) (*dto.AdRe
 		CreatedAt:   ad.CreatedAt,
 	}, nil
 }
+
+func (s *AdService) List() ([]dto.AdResponse, error) {
+	ads, err := s.adRepo.FindAll()
+	if err != nil {
+		return nil, err
+	}
+
+	responses := make([]dto.AdResponse, 0, len(ads))
+	for _, ad := range ads {
+		responses = append(responses, dto.AdResponse{
+			ID:          ad.ID,
+			Title:       ad.Title,
+			Description: ad.Description,
+			Price:       ad.Price,
+			Author:      ad.Author.Username,
+			CreatedAt:   ad.CreatedAt,
+		})
+	}
+
+	return responses, nil
+}
