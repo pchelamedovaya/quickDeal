@@ -6,10 +6,30 @@ header {
 
 .content {
   display: flex;
+  gap: 24px;
 }
 
 .form-column {
   width: 400px;
+  flex-shrink: 0;
+}
+
+.list-column {
+  flex: 1;
+}
+
+.ad-card {
+  border: 1px solid #ccc;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.ad-card h3 {
+  margin: 0 0 8px;
+}
+
+.ad-card p {
+  margin: 4px 0;
 }
 
 button {

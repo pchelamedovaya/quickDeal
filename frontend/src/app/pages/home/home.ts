@@ -1,19 +1,33 @@
-import {Component, inject} from '@angular/core';
+import {DatePipe} from '@angular/common';
+import {Component, inject, OnInit, signal} from '@angular/core';
 import {Router} from '@angular/router';
 
+import {AdResponse} from '../../ads/ad.models';
+import {AdsService} from '../../ads/ads.service';
 import {AuthService} from '../../auth/auth.service';
 import {CreateAdForm} from '../../components/create-ad-form/create-ad-form';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CreateAdForm],
+  imports: [CreateAdForm, DatePipe],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
-export class Home {
+export class Home implements OnInit {
   private readonly authService = inject(AuthService);
+  private readonly adsService = inject(AdsService);
   private readonly router = inject(Router);
+
+  protected readonly ads = signal<AdResponse[]>([]);
+
+  ngOnInit(): void {
+    this.adsService.list().subscribe((ads) => this.ads.set(ads));
+
+    this.adsService.createdAd$.subscribe((ad) => {
+      this.ads.update((current) => [ad, ...current]);
+    });
+  }
 
   logout(): void {
     this.authService.logout().subscribe({
