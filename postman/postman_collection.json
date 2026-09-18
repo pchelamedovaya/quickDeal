@@ -1,0 +1,294 @@
+{
+  "info": {
+    "_postman_id": "cac5fced-033c-4d6d-9a73-78c39a001916",
+    "name": "quickDeal",
+    "description": "Marketplace board where users post and browse ads",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "37602382"
+  },
+  "item": [
+    {
+      "name": "auth",
+      "item": [
+        {
+          "name": "register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"example@example.com\",\r\n    \"username\": \"Example\",\r\n    \"password\": \"example123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            },
+            "description": "## Register\n\nRegisters a new user account in the system.\n\n---\n\n### Endpoint\n\n| Method | URL |\n| --- | --- |\n| `POST` | `{{base_url}}/auth/register` |\n\n---\n\n### Headers\n\n| Header | Value | Required |\n| --- | --- | --- |\n| `Content-Type` | `application/json` | ✅ Yes |\n\n---\n\n### Request Body\n\nSend a JSON object with the following fields:\n\n| Field | Type | Required | Description |\n| --- | --- | --- | --- |\n| `email` | `string` | ✅ Yes | A valid, unique email address for the new user |\n| `username` | `string` | ✅ Yes | A unique display name for the new user |\n| `password` | `string` | ✅ Yes | The account password (min. 8 characters recommended) |\n\n**Example:**\n\n``` json\n{\n  \"email\": \"example@example.com\",\n  \"username\": \"Example\",\n  \"password\": \"example123\"\n}\n```\n\n---\n\n### Request Body Required\n\n| Field | Type | Required |\n| --- | --- | --- |\n| `email` | `string` | ✅ Yes |\n| `username` | `string` | ✅ Yes |\n| `password` | `string` | ✅ Yes |\n\nAll three fields are mandatory. Omitting any of them will result in a validation error.\n\n---\n\n### Response\n\n**`201 Created`** — The user was successfully registered.\n\n| Field | Type | Description |\n| --- | --- | --- |\n| `id` | `string` (UUID) | Unique identifier of the newly created user |\n| `email` | `string` | Email address of the registered user |\n| `username` | `string` | Username of the registered user |\n| `created_at` | `string` (ISO 8601) | Timestamp of account creation |\n\n**Example:**\n\n``` json\n{\n  \"id\": \"a1b2c3d4-e5f6-7890-abcd-ef1234567890\",\n  \"email\": \"example@example.com\",\n  \"username\": \"Example\",\n  \"created_at\": \"2026-09-17T12:00:00.000Z\"\n}\n```\n\n---\n\n### Error Responses\n\n| Status | Description |\n| --- | --- |\n| `400 Bad Request` | Missing or invalid fields in the request body |\n| `409 Conflict` | A user with the given email or username already exists |\n| `500 Internal Server Error` | Unexpected server error |\n\n---\n\n### Notes\n\n- `email` and `username` must be unique across all users.\n- Passwords are stored securely and should never be sent in plain text over unencrypted connections.\n- No authentication is required to access this endpoint."
+          },
+          "response": []
+        },
+        {
+          "name": "login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"accessToken\", response.access_token);\r",
+                  "pm.collectionVariables.set(\"refreshToken\", response.refresh_token);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"example@example.com\",\r\n    \"password\": \"example123\"\r\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "## Login\n\nAuthenticates an existing user and returns a pair of JWT tokens — `access_token` and `refresh_token`.\n\n---\n\n### Endpoint\n\n| Method | URL |\n| --- | --- |\n| `POST` | `{{base_url}}/auth/login` |\n\n---\n\n### Headers\n\n| Header | Value | Required |\n| --- | --- | --- |\n| `Content-Type` | `application/json` | ✅ Yes |\n\n---\n\n### Request Body\n\nSend a JSON object with the following fields:\n\n| Field | Type | Required | Description |\n| --- | --- | --- | --- |\n| `email` | `string` | ✅ Yes | The registered email address of the user |\n| `password` | `string` | ✅ Yes | The account password |\n\n**Example:**\n\n``` json\n{\n  \"email\": \"example@example.com\",\n  \"password\": \"example123\"\n}\n\n ```\n\n---\n\n### Request Body Required\n\n| Field | Type | Required |\n| --- | --- | --- |\n| `email` | `string` | ✅ Yes |\n| `password` | `string` | ✅ Yes |\n\nBoth fields are mandatory. Omitting either will result in a validation error.\n\n---\n\n### Response\n\n**`200 OK`** — Authentication successful.\n\n| Field | Type | Description |\n| --- | --- | --- |\n| `access_token` | `string` (JWT) | Short-lived token used to authorize subsequent requests |\n| `refresh_token` | `string` (JWT) | Long-lived token used to obtain a new `access_token` |\n\n**Example:**\n\n``` json\n{\n  \"access_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n  \"refresh_token\": \"dGhpcyBpcyBhIHJlZnJlc2ggdG9rZW4...\"\n}\n\n ```\n\n---\n\n### Post-Response Script\n\nAfter a successful login, the following environment variables are automatically set by the post-response script:\n\n| Variable | Value |\n| --- | --- |\n| `accessToken` | Value of `access_token` from the response |\n| `refreshToken` | Value of `refresh_token` from the response |\n\nThese variables are used by other requests in the collection that require authentication via `Bearer {{accessToken}}`.\n\n---\n\n### Error Responses\n\n| Status | Description |\n| --- | --- |\n| `400 Bad Request` | Missing or invalid fields in the request body |\n| `401 Unauthorized` | Incorrect email or password |\n| `500 Internal Server Error` | Unexpected server error |\n\n---\n\n### Notes\n\n- The `access_token` should be included in the `Authorization` header as `Bearer {{accessToken}}` for protected endpoints.\n    \n- Use the `refresh_token` to obtain a new `access_token` when it expires, without requiring the user to log in again.\n    \n- No authentication is required to access this endpoint."
+          },
+          "response": []
+        },
+        {
+          "name": "refresh",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"accessToken\", response.access_token);\r",
+                  "pm.collectionVariables.set(\"refreshToken\", response.refresh_token);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"refresh_token\": \"{{refreshToken}}\"\r\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/refresh",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "refresh"
+              ]
+            },
+            "description": "## Refresh Token\n\nIssues a new pair of JWT tokens — `access_token` and `refresh_token` — using a valid `refresh_token`. Use this endpoint when the `access_token` has expired to avoid requiring the user to log in again.\n\n---\n\n### Endpoint\n\n| Method | URL |\n| --- | --- |\n| `POST` | `{{base_url}}/auth/refresh` |\n\n---\n\n### Headers\n\n| Header | Value | Required |\n| --- | --- | --- |\n| `Content-Type` | `application/json` | ✅ Yes |\n\n---\n\n### Request Body\n\nSend a JSON object with the following field:\n\n| Field | Type | Required | Description |\n| --- | --- | --- | --- |\n| `refresh_token` | `string` (JWT) | ✅ Yes | A valid refresh token obtained from `/auth/login` or a previous `/auth/refresh` call |\n\n**Example:**\n\n``` json\n{\n  \"refresh_token\": \"{{refreshToken}}\"\n}\n```\n\n---\n\n### Request Body Required\n\n| Field | Type | Required |\n| --- | --- | --- |\n| `refresh_token` | `string` | ✅ Yes |\n\nThis field is mandatory. Omitting it will result in a validation error.\n\n---\n\n### Response\n\n**`200 OK`** — Token refresh successful.\n\n| Field | Type | Description |\n| --- | --- | --- |\n| `access_token` | `string` (JWT) | New short-lived token for authorizing subsequent requests |\n| `refresh_token` | `string` (JWT) | New long-lived token to be used for the next refresh |\n\n**Example:**\n\n``` json\n{\n  \"access_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n  \"refresh_token\": \"dGhpcyBpcyBhIHJlZnJlc2ggdG9rZW4...\"\n}\n```\n\n> ⚠️ The old `refresh_token` is invalidated after a successful refresh. Always use the latest token returned.\n\n---\n\n### Post-Response Script\n\nAfter a successful refresh, the following environment variables are automatically updated by the post-response script:\n\n| Variable | Value |\n| --- | --- |\n| `accessToken` | Value of `access_token` from the response |\n| `refreshToken` | Value of `refresh_token` from the response |\n\nThese variables are used by other requests in the collection that require authentication via `Bearer {{accessToken}}`.\n\n---\n\n### Error Responses\n\n| Status | Description |\n| --- | --- |\n| `400 Bad Request` | Missing or malformed `refresh_token` in the request body |\n| `401 Unauthorized` | The `refresh_token` is invalid or has expired |\n| `500 Internal Server Error` | Unexpected server error |\n\n---\n\n### Notes\n\n- The `refresh_token` is set automatically in the `{{refreshToken}}` environment variable after a successful `/auth/login` or `/auth/refresh` call.\n- Each refresh issues a **new** `refresh_token` — the previous one becomes invalid (token rotation).\n- No `Authorization` header is required for this endpoint."
+          },
+          "response": []
+        },
+        {
+          "name": "logout",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"refresh_token\": \"{{refreshToken}}\"\r\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/logout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "logout"
+              ]
+            },
+            "description": "## Logout\n\nInvalidates the current `refresh_token`, effectively ending the user's session. After a successful logout, the token can no longer be used to obtain new access tokens.\n\n---\n\n### Endpoint\n\n| Method | URL |\n| --- | --- |\n| `POST` | `{{base_url}}/auth/logout` |\n\n---\n\n### Headers\n\n| Header | Value | Required |\n| --- | --- | --- |\n| `Content-Type` | `application/json` | ✅ Yes |\n\n---\n\n### Request Body\n\nSend a JSON object with the following field:\n\n| Field | Type | Required | Description |\n| --- | --- | --- | --- |\n| `refresh_token` | `string` (JWT) | ✅ Yes | The active refresh token to be invalidated |\n\n**Example:**\n\n``` json\n{\n  \"refresh_token\": \"{{refreshToken}}\"\n}\n```\n\n---\n\n### Request Body Required\n\n| Field | Type | Required |\n| --- | --- | --- |\n| `refresh_token` | `string` | ✅ Yes |\n\nThis field is mandatory. Omitting it will result in a validation error.\n\n---\n\n### Response\n\n**`200 OK`** — Logout successful. The provided `refresh_token` has been invalidated.\n\n> The response body may be empty or contain a confirmation message depending on the server implementation.\n\n---\n\n### Error Responses\n\n| Status | Description |\n| --- | --- |\n| `400 Bad Request` | Missing or malformed `refresh_token` in the request body |\n| `401 Unauthorized` | The `refresh_token` is invalid or has already been invalidated |\n| `500 Internal Server Error` | Unexpected server error |\n\n---\n\n### Notes\n\n- After logout, the `{{refreshToken}}` environment variable will still hold the old (now invalid) token. Clear it manually if needed.\n- The `access_token` is not invalidated server-side by this endpoint — it will remain valid until it naturally expires. Discard it on the client side after logout.\n- No `Authorization` header is required for this endpoint — only the `refresh_token` in the request body.\n\n---"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "ads",
+      "item": [
+        {
+          "name": "create ad",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"title\": \"Test title\",\r\n    \"description\": \"Test description\",\r\n    \"price\": 1000\r\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/ads",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ads"
+              ]
+            },
+            "description": "## Create Ad\n\nCreates a new ad listing in the system. Requires authentication via Bearer token.\n\n---\n\n### Endpoint\n\n| Method | URL |\n| --- | --- |\n| `POST` | `{{base_url}}/ads` |\n\n---\n\n### Headers\n\n| Header | Value | Required |\n| --- | --- | --- |\n| `Content-Type` | `application/json` | ✅ Yes |\n| `Authorization` | `Bearer {{accessToken}}` | ✅ Yes |\n\n---\n\n### Request Body\n\nSend a JSON object with the following fields:\n\n| Field | Type | Required | Description |\n| --- | --- | --- | --- |\n| `title` | `string` | ✅ Yes | The title of the advertisement |\n| `description` | `string` | ❌ No | A detailed description of the ad |\n| `price` | `integer` | ✅ Yes | The price associated with the ad |\n\n**Example:**\n\n``` json\n{\n  \"title\": \"Test title\",\n  \"description\": \"Test description\",\n  \"price\": 1000\n}\n```\n\n---\n\n### Request Body Required\n\n| Field | Type | Required |\n| --- | --- | --- |\n| `title` | `string` | ✅ Yes |\n| `price` | `integer` | ✅ Yes |\n| `description` | `string` | ❌ No (optional) |\n\nOmitting `title` or `price` will result in a validation error.\n\n---\n\n### Response\n\n**`201 Created`** — The ad was successfully created.\n\n| Field | Type | Description |\n| --- | --- | --- |\n| `id` | `string` (UUID) | Unique identifier of the created ad |\n| `title` | `string` | Title of the ad |\n| `description` | `string` | Description of the ad |\n| `price` | `integer` | Price of the ad |\n| `author` | `string` | Username or identifier of the creator |\n| `created_at` | `string` (ISO 8601) | Timestamp of when the ad was created |\n\n**Example:**\n\n``` json\n{\n  \"id\": \"97010a4a-4b56-43a9-96c2-3c49111dd8b2\",\n  \"title\": \"Test title\",\n  \"description\": \"Test description\",\n  \"price\": 1000,\n  \"author\": \"Example\",\n  \"created_at\": \"2026-09-17T12:16:13.7079175+03:00\"\n}\n```\n\n---\n\n### Error Responses\n\n| Status | Description |\n| --- | --- |\n| `400 Bad Request` | Missing or invalid fields in the request body |\n| `401 Unauthorized` | Missing or invalid `Authorization` token |\n| `500 Internal Server Error` | Unexpected server error |\n\n---\n\n### Notes\n\n- The `accessToken` is set automatically in the `{{accessToken}}` environment variable after a successful `/auth/login` or `/auth/refresh` call.\n- If the token has expired, use `/auth/refresh` to obtain a new one before retrying.\n- `description` is optional and can be omitted from the request body."
+          },
+          "response": []
+        },
+        {
+          "name": "read ads",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{base_url}}/ads",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ads"
+              ]
+            },
+            "description": "## Read Ads\n\nReturns a list of all ad listings in the system. Requires authentication via Bearer token.\n\n---\n\n### Endpoint\n\n| Method | URL |\n| --- | --- |\n| `GET` | `{{base_url}}/ads` |\n\n---\n\n### Headers\n\n| Header | Value | Required |\n| --- | --- | --- |\n| `Content-Type` | `application/json` | ✅ Yes |\n| `Authorization` | `Bearer {{accessToken}}` | ✅ Yes |\n\n---\n\n### Request Body\n\nThis endpoint does not require a request body.\n\n---\n\n### Response\n\n**`200 OK`** — Returns an array of ad objects.\n\nEach object in the array contains:\n\n| Field | Type | Description |\n| --- | --- | --- |\n| `id` | `string` (UUID) | Unique identifier of the ad |\n| `title` | `string` | Title of the ad |\n| `description` | `string` | Description of the ad |\n| `price` | `integer` | Price of the ad |\n| `author` | `string` | Username or identifier of the creator |\n| `created_at` | `string` (ISO 8601) | Timestamp of when the ad was created |\n\n**Example:**\n\n``` json\n[\n  {\n    \"id\": \"97010a4a-4b56-43a9-96c2-3c49111dd8b2\",\n    \"title\": \"Test title\",\n    \"description\": \"Test description\",\n    \"price\": 1000,\n    \"author\": \"Example\",\n    \"created_at\": \"2026-09-17T12:16:13.7079175+03:00\"\n  }\n]\n```\n\n---\n\n### Error Responses\n\n| Status | Description |\n| --- | --- |\n| `401 Unauthorized` | Missing or invalid `Authorization` token |\n| `500 Internal Server Error` | Unexpected server error |\n\n---\n\n### Notes\n\n- The `accessToken` is set automatically in the `{{accessToken}}` environment variable after a successful `/auth/login` or `/auth/refresh` call.\n- If the token has expired, use `/auth/refresh` to obtain a new one before retrying.\n- The response is an array and will be empty (`[]`) if no ads exist."
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080/"
+    },
+    {
+      "key": "accessToken",
+      "value": ""
+    },
+    {
+      "key": "refreshToken",
+      "value": ""
+    }
+  ]
+}
