@@ -1,31 +1,32 @@
-<h1>Вход</h1>
+<h1>{{ 'login.title' | translate }}</h1>
 
 <form [formGroup]="form" (ngSubmit)="submit()">
   <div class="field">
-    <label for="email">Email</label>
+    <label for="email">{{ 'login.emailLabel' | translate }}</label>
     <input id="email" type="email" formControlName="email" />
     @if (form.controls.email.invalid && form.controls.email.touched) {
-    <p class="field-error">Введите корректный email</p>
+    <p class="field-error">{{ 'login.emailError' | translate }}</p>
     }
   </div>
 
   <div class="field">
-    <label for="password">Пароль</label>
+    <label for="password">{{ 'login.passwordLabel' | translate }}</label>
     <input id="password" type="password" formControlName="password" />
     @if (form.controls.password.invalid && form.controls.password.touched) {
-    <p class="field-error">Пароль обязателен</p>
+    <p class="field-error">{{ 'login.passwordError' | translate }}</p>
     }
   </div>
 
   <button type="submit" [disabled]="submitting()">
-    {{ submitting() ? 'Вход...' : 'Войти' }}
+    {{ (submitting() ? 'login.submitting' : 'login.submit') | translate }}
   </button>
 
-  @if (errorMessage()) {
-  <p class="field-error">{{ errorMessage() }}</p>
+  @if (errorKey(); as errorKey) {
+  <p class="field-error">{{ errorKey | translate }}</p>
   }
 </form>
 
 <p class="hint">
-  Нет аккаунта? <a routerLink="/register">Зарегистрироваться</a>
+  {{ 'login.noAccount' | translate }}
+  <a routerLink="/register">{{ 'login.registerLink' | translate }}</a>
 </p>

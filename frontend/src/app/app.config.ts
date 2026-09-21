@@ -8,6 +8,9 @@ import {provideHttpClient, withInterceptors} from '@angular/common/http';
 
 import {routes} from './app.routes';
 import {authInterceptor} from './auth/auth.interceptor';
+import {registerAppLocales} from './localization/locale-data';
+
+registerAppLocales();
 
 export const appConfig: ApplicationConfig = {
   providers: [

@@ -1,0 +1,19 @@
+:host {
+  display: inline-block;
+}
+
+.switcher {
+  display: inline-flex;
+  gap: var(--space-1);
+}
+
+.switcher button {
+  padding: var(--space-1) var(--space-3);
+  font-size: 0.9rem;
+}
+
+.switcher button.active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #ffffff;
+}

@@ -1,20 +1,17 @@
-import {HttpErrorResponse} from '@angular/common/http';
 import {Component, inject, signal} from '@angular/core';
 import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 import {Router, RouterLink} from '@angular/router';
 import {switchMap} from 'rxjs';
 
 import {AuthService} from '../../auth/auth.service';
-
-const ERROR_MESSAGES: Record<string, string> = {
-  'email already taken': 'Этот email уже занят',
-  'username already taken': 'Это имя пользователя уже занято',
-};
+import {apiErrorKey} from '../../localization/api-error';
+import {TranslatePipe} from '../../localization/translate.pipe';
+import {TranslationKey} from '../../localization/translation-keys';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, TranslatePipe],
   templateUrl: './register.html',
   styleUrl: './register.css',
 })
@@ -24,7 +21,7 @@ export class Register {
   private readonly router = inject(Router);
 
   protected readonly submitting = signal(false);
-  protected readonly errorMessage = signal<string | null>(null);
+  protected readonly errorKey = signal<TranslationKey | null>(null);
 
   protected readonly form = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
@@ -39,7 +36,7 @@ export class Register {
     }
 
     this.submitting.set(true);
-    this.errorMessage.set(null);
+    this.errorKey.set(null);
 
     const {email, password} = this.form.getRawValue();
 
@@ -51,14 +48,9 @@ export class Register {
           this.submitting.set(false);
           void this.router.navigateByUrl('/home');
         },
-        error: (err: HttpErrorResponse) => {
+        error: (err: unknown) => {
           this.submitting.set(false);
-          const backendMessage: string | undefined = err.error?.error;
-          this.errorMessage.set(
-            (backendMessage && ERROR_MESSAGES[backendMessage]) ??
-              backendMessage ??
-              'Не удалось зарегистрироваться, попробуйте еще раз',
-          );
+          this.errorKey.set(apiErrorKey(err));
         },
       });
   }

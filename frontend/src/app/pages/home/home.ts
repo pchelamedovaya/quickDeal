@@ -1,4 +1,4 @@
-import {DatePipe} from '@angular/common';
+import {CurrencyPipe, DatePipe} from '@angular/common';
 import {Component, inject, OnInit, signal} from '@angular/core';
 import {Router} from '@angular/router';
 
@@ -6,11 +6,13 @@ import {AdResponse} from '../../ads/ad.models';
 import {AdsService} from '../../ads/ads.service';
 import {AuthService} from '../../auth/auth.service';
 import {CreateAdForm} from '../../components/create-ad-form/create-ad-form';
+import {LocalizationService} from '../../localization/localization.service';
+import {TranslatePipe} from '../../localization/translate.pipe';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CreateAdForm, DatePipe],
+  imports: [CreateAdForm, CurrencyPipe, DatePipe, TranslatePipe],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
@@ -19,6 +21,7 @@ export class Home implements OnInit {
   private readonly adsService = inject(AdsService);
   private readonly router = inject(Router);
 
+  protected readonly localization = inject(LocalizationService);
   protected readonly ads = signal<AdResponse[]>([]);
 
   ngOnInit(): void {

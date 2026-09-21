@@ -1,13 +1,15 @@
-import {HttpErrorResponse} from '@angular/common/http';
 import {Component, inject, signal} from '@angular/core';
 import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 
 import {AdsService} from '../../ads/ads.service';
+import {apiErrorKey} from '../../localization/api-error';
+import {TranslatePipe} from '../../localization/translate.pipe';
+import {TranslationKey} from '../../localization/translation-keys';
 
 @Component({
   selector: 'app-create-ad-form',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, TranslatePipe],
   templateUrl: './create-ad-form.html',
   styleUrl: './create-ad-form.css',
 })
@@ -16,7 +18,7 @@ export class CreateAdForm {
   private readonly adsService = inject(AdsService);
 
   protected readonly submitting = signal(false);
-  protected readonly errorMessage = signal<string | null>(null);
+  protected readonly errorKey = signal<TranslationKey | null>(null);
 
   protected readonly form = this.fb.group({
     title: this.fb.nonNullable.control('', [Validators.required]),
@@ -34,7 +36,7 @@ export class CreateAdForm {
     }
 
     this.submitting.set(true);
-    this.errorMessage.set(null);
+    this.errorKey.set(null);
 
     const {title, description, price} = this.form.getRawValue();
 
@@ -43,12 +45,9 @@ export class CreateAdForm {
         this.submitting.set(false);
         this.form.reset({title: '', description: '', price: null});
       },
-      error: (err: HttpErrorResponse) => {
+      error: (err: unknown) => {
         this.submitting.set(false);
-        this.errorMessage.set(
-          err.error?.error ??
-            'Не удалось создать объявление, попробуйте еще раз',
-        );
+        this.errorKey.set(apiErrorKey(err));
       },
     });
   }
