@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/http"
 
+	"quickdeal/apperrors"
 	"quickdeal/dto"
 	"quickdeal/service"
 
@@ -21,17 +22,19 @@ func NewAuthController(authService *service.AuthService) *AuthController {
 func (c *AuthController) Register(ctx *gin.Context) {
 	var req dto.RegisterRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		apperrors.Validation(ctx, err)
 		return
 	}
 
 	user, err := c.authService.Register(req)
 	if err != nil {
 		switch {
-		case errors.Is(err, service.ErrEmailTaken), errors.Is(err, service.ErrUsernameTaken):
-			ctx.JSON(http.StatusConflict, gin.H{"error": err.Error()})
+		case errors.Is(err, service.ErrEmailTaken):
+			apperrors.JSON(ctx, http.StatusConflict, apperrors.CodeEmailTaken)
+		case errors.Is(err, service.ErrUsernameTaken):
+			apperrors.JSON(ctx, http.StatusConflict, apperrors.CodeUsernameTaken)
 		default:
-			ctx.JSON(http.StatusInternalServerError, gin.H{"error": "failed to register user"})
+			apperrors.Internal(ctx)
 		}
 		return
 	}
@@ -42,7 +45,7 @@ func (c *AuthController) Register(ctx *gin.Context) {
 func (c *AuthController) Login(ctx *gin.Context) {
 	var req dto.LoginRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		apperrors.Validation(ctx, err)
 		return
 	}
 
@@ -50,9 +53,9 @@ func (c *AuthController) Login(ctx *gin.Context) {
 	if err != nil {
 		switch {
 		case errors.Is(err, service.ErrInvalidCredentials):
-			ctx.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+			apperrors.JSON(ctx, http.StatusUnauthorized, apperrors.CodeInvalidCredentials)
 		default:
-			ctx.JSON(http.StatusInternalServerError, gin.H{"error": "failed to log in"})
+			apperrors.Internal(ctx)
 		}
 		return
 	}
@@ -63,7 +66,7 @@ func (c *AuthController) Login(ctx *gin.Context) {
 func (c *AuthController) Refresh(ctx *gin.Context) {
 	var req dto.RefreshTokenRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		apperrors.Validation(ctx, err)
 		return
 	}
 
@@ -71,9 +74,9 @@ func (c *AuthController) Refresh(ctx *gin.Context) {
 	if err != nil {
 		switch {
 		case errors.Is(err, service.ErrInvalidRefreshToken):
-			ctx.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+			apperrors.JSON(ctx, http.StatusUnauthorized, apperrors.CodeInvalidRefreshToken)
 		default:
-			ctx.JSON(http.StatusInternalServerError, gin.H{"error": "failed to refresh token"})
+			apperrors.Internal(ctx)
 		}
 		return
 	}
@@ -84,16 +87,16 @@ func (c *AuthController) Refresh(ctx *gin.Context) {
 func (c *AuthController) Logout(ctx *gin.Context) {
 	var req dto.RefreshTokenRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		apperrors.Validation(ctx, err)
 		return
 	}
 
 	if err := c.authService.Logout(req); err != nil {
 		switch {
 		case errors.Is(err, service.ErrInvalidRefreshToken):
-			ctx.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+			apperrors.JSON(ctx, http.StatusUnauthorized, apperrors.CodeInvalidRefreshToken)
 		default:
-			ctx.JSON(http.StatusInternalServerError, gin.H{"error": "failed to log out"})
+			apperrors.Internal(ctx)
 		}
 		return
 	}

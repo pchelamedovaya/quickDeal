@@ -1,38 +1,41 @@
-<h2>Создать объявление</h2>
+<h2>{{ 'createAd.title' | translate }}</h2>
 
 <form [formGroup]="form" (ngSubmit)="submit()">
   <div class="field">
-    <label for="title">Заголовок</label>
+    <label for="title">{{ 'createAd.titleLabel' | translate }}</label>
     <input id="title" type="text" formControlName="title" />
     @if (form.controls.title.invalid && form.controls.title.touched) {
-    <p class="field-error">Заголовок обязателен</p>
+    <p class="field-error">{{ 'createAd.titleError' | translate }}</p>
     }
   </div>
 
   <div class="field">
-    <label for="description">Описание</label>
+    <label for="description">
+      {{ 'createAd.descriptionLabel' | translate }}
+    </label>
     <textarea id="description" formControlName="description"></textarea>
   </div>
 
   <div class="field">
-    <label for="price">Цена</label>
+    <label for="price">{{ 'createAd.priceLabel' | translate }}</label>
     <input id="price" type="number" formControlName="price" />
     @if (form.controls.price.hasError('required') &&
     form.controls.price.touched) {
-    <p class="field-error">Цена обязательна</p>
+    <p class="field-error">{{ 'createAd.priceRequired' | translate }}</p>
     } @else if (form.controls.price.hasError('min') &&
     form.controls.price.touched) {
-    <p class="field-error">Цена должна быть больше 0</p>
+    <p class="field-error">{{ 'createAd.priceMin' | translate }}</p>
     }
   </div>
 
   <div class="actions">
     <button type="submit" [disabled]="submitting()">
-      {{ submitting() ? 'Отправка...' : 'Создать' }}
+      {{ (submitting() ? 'createAd.submitting' : 'createAd.submit') | translate
+      }}
     </button>
   </div>
 
-  @if (errorMessage()) {
-  <p class="field-error">{{ errorMessage() }}</p>
+  @if (errorKey(); as errorKey) {
+  <p class="field-error">{{ errorKey | translate }}</p>
   }
 </form>

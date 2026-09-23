@@ -1,37 +1,40 @@
-<h1>Регистрация</h1>
+<h1>{{ 'register.title' | translate }}</h1>
 
 <form [formGroup]="form" (ngSubmit)="submit()">
   <div class="field">
-    <label for="email">Email</label>
+    <label for="email">{{ 'register.emailLabel' | translate }}</label>
     <input id="email" type="email" formControlName="email" />
     @if (form.controls.email.invalid && form.controls.email.touched) {
-    <p class="field-error">Введите корректный email</p>
+    <p class="field-error">{{ 'register.emailError' | translate }}</p>
     }
   </div>
 
   <div class="field">
-    <label for="username">Имя пользователя</label>
+    <label for="username">{{ 'register.usernameLabel' | translate }}</label>
     <input id="username" type="text" formControlName="username" />
     @if (form.controls.username.invalid && form.controls.username.touched) {
-    <p class="field-error">Имя пользователя обязательно</p>
+    <p class="field-error">{{ 'register.usernameError' | translate }}</p>
     }
   </div>
 
   <div class="field">
-    <label for="password">Пароль</label>
+    <label for="password">{{ 'register.passwordLabel' | translate }}</label>
     <input id="password" type="password" formControlName="password" />
     @if (form.controls.password.invalid && form.controls.password.touched) {
-    <p class="field-error">Пароль должен быть не короче 6 символов</p>
+    <p class="field-error">{{ 'register.passwordError' | translate }}</p>
     }
   </div>
 
   <button type="submit" [disabled]="submitting()">
-    {{ submitting() ? 'Отправка...' : 'Зарегистрироваться' }}
+    {{ (submitting() ? 'register.submitting' : 'register.submit') | translate }}
   </button>
 
-  @if (errorMessage()) {
-  <p class="field-error">{{ errorMessage() }}</p>
+  @if (errorKey(); as errorKey) {
+  <p class="field-error">{{ errorKey | translate }}</p>
   }
 </form>
 
-<p class="hint">Уже есть аккаунт? <a routerLink="/login">Войти</a></p>
+<p class="hint">
+  {{ 'register.haveAccount' | translate }}
+  <a routerLink="/login">{{ 'register.loginLink' | translate }}</a>
+</p>

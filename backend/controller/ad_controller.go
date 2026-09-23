@@ -3,6 +3,7 @@ package controller
 import (
 	"net/http"
 
+	"quickdeal/apperrors"
 	"quickdeal/dto"
 	"quickdeal/middleware"
 	"quickdeal/service"
@@ -22,7 +23,7 @@ func NewAdController(adService *service.AdService) *AdController {
 func (c *AdController) Create(ctx *gin.Context) {
 	var req dto.CreateAdRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		apperrors.Validation(ctx, err)
 		return
 	}
 
@@ -30,7 +31,7 @@ func (c *AdController) Create(ctx *gin.Context) {
 
 	ad, err := c.adService.Create(userID, req)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create ad"})
+		apperrors.Internal(ctx)
 		return
 	}
 
@@ -40,7 +41,7 @@ func (c *AdController) Create(ctx *gin.Context) {
 func (c *AdController) List(ctx *gin.Context) {
 	ads, err := c.adService.List()
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch ads"})
+		apperrors.Internal(ctx)
 		return
 	}
 

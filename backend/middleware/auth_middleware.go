@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strings"
 
+	"quickdeal/apperrors"
 	"quickdeal/utils"
 
 	"github.com/gin-gonic/gin"
@@ -16,13 +17,13 @@ func AuthMiddleware(accessSecret string) gin.HandlerFunc {
 		header := ctx.GetHeader("Authorization")
 		token, ok := strings.CutPrefix(header, "Bearer ")
 		if !ok || token == "" {
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "missing or invalid authorization header"})
+			apperrors.AbortJSON(ctx, http.StatusUnauthorized, apperrors.CodeMissingAuthHeader)
 			return
 		}
 
 		userID, err := utils.ParseAccessToken(token, accessSecret)
 		if err != nil {
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "invalid or expired access token"})
+			apperrors.AbortJSON(ctx, http.StatusUnauthorized, apperrors.CodeInvalidOrExpiredToken)
 			return
 		}
 
